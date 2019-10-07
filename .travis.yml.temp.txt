@@ -3,10 +3,10 @@ services:
   - docker
 
 script:
+  - docker build -t bermana10/multi-client ./client
   - docker build -t bermana10/multi-nginx ./nginx
   - docker build -t bermana10/multi-server ./server
   - docker build -t bermana10/multi-worker ./worker
-  - docker build -t bermana10/multi-client ./client
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to docker hub
@@ -15,3 +15,15 @@ script:
   - docker push bermana10/multi-server
   - docker push bermana10/multi-worker
 
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-west-1-306476627547
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
