@@ -3,7 +3,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t bermana10/react-test -f /home/Users/Admin/complex/client/Dockerfile.dev ./client
+  - docker build -f ./client/Dockerfile.dev ./client
 
 
 script:
