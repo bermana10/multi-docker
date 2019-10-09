@@ -4,11 +4,8 @@ services:
 
 before_install:
   - docker build -t bermana10/react-test -f ./ser/Dockerfile.dev ./ser
-
-
 script:
   - docker run -e CI=true bermana10/react-test npm test -- --coverage
-
 after_success:
   - docker build -t bermana10/multi-client ./ser
   - docker build -t bermana10/multi-nginx ./nginx
@@ -21,3 +18,18 @@ after_success:
   - docker push bermana10/multi-nginx
   - docker push bermana10/multi-server
   - docker push bermana10/multi-worker
+
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-1-014891009532"
+  bucket_path: "docker-multi"
+  on:
+    branch: master
+  access_key_id:
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
